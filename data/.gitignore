@@ -1,0 +1,25 @@
+# OS Images - Large files
+*.img
+*.img.gz
+*.iso
+
+# Cache files
+cache/downloaded/**
+cache/build/**
+cache/backups/**
+
+# Logs
+logs/**
+
+# Temporary files
+*.tmp
+*.lock
+*.pid
+
+# Environment files
+.env
+.env.local
+
+# OS-specific
+.DS_Store
+Thumbs.db

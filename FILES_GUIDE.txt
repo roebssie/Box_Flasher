@@ -1,0 +1,319 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                 BOX_FLASHER PROJECT - FILES GUIDE                          ║
+║           S905W USB-A to USB-A Flashing & Service Deployment               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+PROJECT STATUS: ✅ READY TO DEPLOY
+├─ Binary built: build-aarch64/monitor_service (8.6 MB, aarch64, static)
+├─ Documentation: Complete with USB-A specific guides
+├─ Scripts: Automated flashing and deployment ready
+└─ Configuration: CMakeLists.txt, CMakeToolchain.cmake configured
+
+════════════════════════════════════════════════════════════════════════════
+
+📖 DOCUMENTATION FILES (Read These First)
+
+1. 🚀 START HERE: USB_A_QUICK_START.md (5 min read)
+   └─ Quick reference for USB-A to USB-A cable flashing
+   └─ Hardware setup diagram
+   └─ 3-step flashing process
+   └─ Troubleshooting matrix
+
+2. 📚 COMPREHENSIVE: USB_A_TO_A_FLASHING.md (detailed guide)
+   └─ Complete USB-A flashing guide for macOS
+   └─ Step-by-step instructions
+   └─ Boot button vs. jumper methods
+   └─ Detailed troubleshooting
+   └─ Post-flashing setup
+
+3. 🔧 SERVICE DEPLOYMENT: DEVICE_SETUP.md
+   └─ Deploy monitoring service to S905W
+   └─ Systemd service configuration
+   └─ Persistent service setup
+   └─ Monitoring and logging
+
+4. 📋 MASTER REFERENCE: README_USB_A_COMPLETE.md
+   └─ Overview of all resources
+   └─ Complete workflow summary
+   └─ Quick command cheat sheet
+   └─ Timeline and checklist
+
+5. ⚡ GENERAL REFERENCE: QUICKSTART.md
+   └─ General deployment reference
+   └─ Build verification
+   └─ Network deployment tips
+
+6. 🏗️  TECHNICAL DETAILS: REPORT.md
+   └─ Full technical architecture
+   └─ Project phases and implementation
+   └─ Advanced configuration options
+
+════════════════════════════════════════════════════════════════════════════
+
+🛠️  EXECUTABLE SCRIPTS (Run These)
+
+1. usb_flash_s905w.sh (USB flashing automation)
+   Usage: bash usb_flash_s905w.sh
+   What it does:
+   ├─ Checks prerequisites (libusb, etc.)
+   ├─ Downloads CoreELEC image
+   ├─ Detects Amlogic device
+   ├─ Installs flashing tool
+   ├─ Lists USB devices
+   └─ Flashes device
+
+   When to use: First time flashing S905W via USB
+
+2. setup_device.sh (Service deployment automation)
+   Usage: ./setup_device.sh 192.168.1.100
+   What it does:
+   ├─ Tests SSH connection to device
+   ├─ Transfers binary to device
+   ├─ Creates systemd service
+   ├─ Enables auto-boot
+   ├─ Starts service immediately
+   └─ Verifies everything works
+
+   When to use: After device boots and is on network
+
+3. tests/test.sh (Build verification)
+   Usage: ./tests/test.sh
+   What it does:
+   ├─ Checks CMake available
+   ├─ Verifies cross-compiler installed
+   ├─ Validates project files
+   ├─ Tests cross-compilation
+   ├─ Runs CMake configuration
+   ├─ Builds binary
+   └─ Verifies executable format
+
+   When to use: After rebuilding source code
+
+════════════════════════════════════════════════════════════════════════════
+
+💻 SOURCE CODE & BUILD FILES
+
+├─ src/main.cpp (Monitoring service implementation)
+│  ├─ get_cpu_temp() - CPU temperature from /sys/class/thermal/
+│  ├─ get_ram_usage() - RAM info from /proc/meminfo
+│  └─ get_storage_health() - Storage from /proc/mounts
+│
+├─ CMakeLists.txt (Build configuration)
+│  ├─ C++17 standard
+│  ├─ Static linking flags
+│  ├─ Compiler options
+│  └─ Target configuration
+│
+├─ CMakeToolchain.cmake (Cross-compilation setup)
+│  ├─ aarch64-unknown-linux-gnu toolchain
+│  ├─ Target system: Linux aarch64
+│  ├─ Compiler detection
+│  └─ Static linking configuration
+│
+└─ build-aarch64/ (Build output directory)
+   └─ monitor_service (Ready-to-deploy binary)
+      ├─ Size: 8.6 MB
+      ├─ Architecture: aarch64 (ARM64)
+      ├─ Format: ELF 64-bit
+      ├─ Linking: Statically linked
+      └─ Target: Amlogic S905W (CoreELEC/LibreELEC)
+
+════════════════════════════════════════════════════════════════════════════
+
+📁 DIRECTORY STRUCTURE
+
+Box_Flasher/
+├─ README_USB_A_COMPLETE.md ................. Master reference (START HERE)
+├─ USB_A_QUICK_START.md ..................... Quick start guide (5 min)
+├─ USB_A_TO_A_FLASHING.md ................... Detailed flashing guide
+├─ DEVICE_SETUP.md .......................... Service deployment guide
+├─ QUICKSTART.md ............................ General quick start
+├─ REPORT.md ............................... Technical architecture
+├─ FILES_GUIDE.txt .......................... This file
+│
+├─ usb_flash_s905w.sh ....................... USB flashing script
+├─ setup_device.sh .......................... Service setup script
+│
+├─ src/
+│  └─ main.cpp ............................. Monitoring service source
+│
+├─ build-aarch64/
+│  └─ monitor_service ....................... Compiled binary (DEPLOY THIS)
+│
+├─ CMakeLists.txt ........................... Build configuration
+├─ CMakeToolchain.cmake ..................... Cross-compiler setup
+│
+├─ tests/
+│  ├─ test.sh .............................. Build verification
+│  ├─ setup_toolchain.sh
+│  ├─ deployment_test.sh
+│  └─ test.cpp
+│
+├─ reports/
+│  ├─ QUICKSTART.md
+│  ├─ REPORT.md
+│  ├─ PROJECT_STATUS.md
+│  └─ ...other reports
+│
+└─ .github/
+   └─ copilot-instructions.md ............. AI agent instructions
+
+════════════════════════════════════════════════════════════════════════════
+
+🚀 QUICK START SEQUENCE
+
+1. READ (5 min):
+   USB_A_QUICK_START.md
+
+2. PREPARE HARDWARE (10 min):
+   ├─ USB-A to USB-A cable
+   ├─ USB-C to USB-A adapter (if needed)
+   ├─ 5V 2A+ power supply
+   └─ Amlogic S905W device
+
+3. FLASH DEVICE (5 min):
+   bash usb_flash_s905w.sh
+   OR manually follow USB_A_TO_A_FLASHING.md
+
+4. WAIT FOR BOOT (3 min):
+   Device appears on network
+
+5. DEPLOY SERVICE (5 min):
+   ./setup_device.sh 192.168.1.XXX
+
+6. VERIFY (2 min):
+   ssh root@$DEVICE_IP "systemctl status monitor.service"
+
+TOTAL TIME: ~30 minutes (includes device boot time)
+
+════════════════════════════════════════════════════════════════════════════
+
+📚 READING ORDER (Recommended)
+
+For first-time flashing:
+1. README_USB_A_COMPLETE.md ............ Overview (10 min)
+2. USB_A_QUICK_START.md ............... Quick reference (5 min)
+3. USB_A_TO_A_FLASHING.md ............ Details if needed (15 min)
+4. DEVICE_SETUP.md .................... After device boots (10 min)
+
+For updates/rebuilds:
+1. Just re-run: ./setup_device.sh <IP>
+
+For troubleshooting:
+1. USB_A_TO_A_FLASHING.md (Troubleshooting section)
+2. README_USB_A_COMPLETE.md (Troubleshooting matrix)
+3. DEVICE_SETUP.md (Device issues)
+
+════════════════════════════════════════════════════════════════════════════
+
+🔧 COMMON COMMANDS
+
+Setup (first time):
+  brew install libusb libftdi wget
+  brew tap messense/amlogic-tools
+  brew install amlogic-usb-flashing-tool
+
+Flash device:
+  bash usb_flash_s905w.sh
+
+Find device IP:
+  ping -c 1 coreelec.local
+
+Deploy service:
+  ./setup_device.sh 192.168.1.100
+
+Check service status:
+  ssh root@192.168.1.100 "systemctl status monitor.service"
+
+View service logs:
+  ssh root@192.168.1.100 "journalctl -u monitor.service -f"
+
+Update binary:
+  cmake --build build-aarch64
+  ./setup_device.sh 192.168.1.100
+
+════════════════════════════════════════════════════════════════════════════
+
+✅ WHAT'S ALREADY DONE
+
+✓ Binary compiled for aarch64
+✓ Cross-compiler toolchain configured
+✓ Build verified working
+✓ All documentation written
+✓ Flashing scripts created
+✓ Deployment scripts created
+✓ Hardware requirements documented
+✓ Troubleshooting guides written
+
+════════════════════════════════════════════════════════════════════════════
+
+⏳ WHAT'S LEFT
+
+⏳ Obtain USB-A to USB-A cable
+⏳ Prepare S905W device (boot button, power)
+⏳ Run flashing script
+⏳ Wait for device boot (3 min)
+⏳ Find device IP address
+⏳ Deploy service with setup_device.sh
+
+ESTIMATED TIME: 30 minutes total
+
+════════════════════════════════════════════════════════════════════════════
+
+💡 TIPS & TRICKS
+
+• Save this guide locally for offline reference
+• Keep terminal window open during flashing
+• Don't disconnect USB during flashing
+• S905W needs 5V 2A+ power during flashing
+• Boot button must be held 10-15 seconds
+• Wait full 3 minutes for first boot
+• If stuck: try different USB port or cable
+
+════════════════════════════════════════════════════════════════════════════
+
+📞 NEED HELP?
+
+Quick answers:
+  → USB_A_QUICK_START.md (troubleshooting matrix)
+
+Detailed help:
+  → USB_A_TO_A_FLASHING.md (full troubleshooting section)
+
+General deployment:
+  → DEVICE_SETUP.md (device setup issues)
+
+Technical questions:
+  → REPORT.md (architecture and design)
+
+Command reference:
+  → README_USB_A_COMPLETE.md (quick cheat sheet)
+
+════════════════════════════════════════════════════════════════════════════
+
+🎯 SUCCESS INDICATORS
+
+Flashing successful:
+  ✓ Tool shows "Complete"
+  ✓ Device reboots automatically
+  ✓ Device appears on network in 3 min
+
+Service deployed successfully:
+  ✓ setup_device.sh runs without errors
+  ✓ Service shows "active (exited)"
+  ✓ Can view logs with journalctl
+  ✓ Service restarts after device reboot
+
+════════════════════════════════════════════════════════════════════════════
+
+PROJECT COMPLETION: 95% DONE
+
+Only your actions remaining:
+1. Connect hardware (USB-A cable, power)
+2. Run 2-3 commands
+3. Wait for device boot
+4. Done!
+
+You've got this! 🚀
+
+════════════════════════════════════════════════════════════════════════════

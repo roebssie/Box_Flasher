@@ -1,0 +1,239 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    AMLOGIC S905W PROJECT DIRECTORY MAP                       ║
+║                                                                              ║
+║              All data, images, and resources centralized in /data/           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Box_Flasher/
+│
+├── 📦 DATA DIRECTORY (NEW) ════════════════════════════════════════════════════
+│   │
+│   ├── data/                          [CENTRALIZED DATA SYSTEM]
+│   │   ├── images/                    🖼️  OS Images (~500 MB each)
+│   │   │   ├── CoreELEC-Amlogic.aarch64-latest.img  [DOWNLOAD HERE]
+│   │   │   ├── README.md
+│   │   │   └── (compressed backups optional)
+│   │   │
+│   │   ├── config/                    ⚙️  Configuration Files
+│   │   │   ├── device.config          Device settings (USB, thermal)
+│   │   │   ├── build.config           Build parameters (CMake, compiler)
+│   │   │   ├── flashing.config        Flashing settings (timing, URLs)
+│   │   │   └── service.config         Service deployment (systemd, SSH)
+│   │   │
+│   │   ├── resources/                 📚 Supporting Files
+│   │   │   ├── monitor.service        Systemd service template
+│   │   │   └── flashing-tools/        Tool references
+│   │   │
+│   │   ├── cache/                     💾 Build & Download Cache
+│   │   │   ├── downloaded/            Image backups (~250 MB)
+│   │   │   ├── build/                 Build artifacts (~200 MB)
+│   │   │   └── backups/               Device configuration backups
+│   │   │
+│   │   ├── logs/                      📝 Operation Logs
+│   │   │   ├── flashing.log           Flashing operations
+│   │   │   ├── deployment.log         Service deployment
+│   │   │   └── build.log              Build process logs
+│   │   │
+│   │   ├── .gitignore                 Git ignore rules
+│   │   ├── .env.example               Environment template
+│   │   ├── DATA_MANAGEMENT.md         Data system overview
+│   │   └── [Sub-directories structure explained above]
+│   │
+│   └── [~1-2 GB total with images]
+│
+├── 🔧 SCRIPTS DIRECTORY (NEW) ═════════════════════════════════════════════════
+│   │
+│   └── scripts/
+│       ├── init_data.sh               Initialize data structure [✅ RUN]
+│       ├── load_config.sh             Load all configurations
+│       ├── manage_cache.sh            Cache management & cleanup
+│       ├── flash.sh                   Flashing with data directory
+│       └── [Helper utilities]
+│
+├── 📄 DOCUMENTATION FILES ═════════════════════════════════════════════════════
+│   │
+│   ├── DATA_SETUP_COMPLETE.md         [NEW] Setup summary & quick start
+│   ├── DATA_ORGANIZATION.md           [NEW] Complete data management guide
+│   ├── PROJECT_INDEX.md               [NEW] Project structure & files
+│   ├── DIRECTORY_MAP.txt              [NEW] This file
+│   │
+│   ├── README.md                      Project overview
+│   ├── .github/copilot-instructions.md  Architecture documentation
+│   ├── reports/REPORT.md              Technical documentation
+│   ├── reports/QUICKSTART.md          Deployment guide
+│   │
+│   ├── USB_A_TO_A_FLASHING.md         USB-A specific flashing guide
+│   ├── USB_A_QUICK_START.md           5-minute quick reference
+│   ├── USB_FLASHING_GUIDE.md          Comprehensive flashing guide
+│   ├── DEVICE_SETUP.md                Device setup with 3 options
+│   │
+│   └── [Various other documentation files]
+│
+├── 🔨 SOURCE CODE & BUILD ═════════════════════════════════════════════════════
+│   │
+│   ├── src/
+│   │   └── main.cpp                   Monitoring service source (174 lines)
+│   │       ├── get_cpu_temp()         Reads /sys/class/thermal
+│   │       ├── get_ram_usage()        Reads /proc/meminfo
+│   │       ├── get_storage_health()   Reads /proc/mounts
+│   │       └── main()                 Formatted output
+│   │
+│   ├── build-aarch64/                 Build Output Directory
+│   │   ├── monitor_service            🎯 Compiled Binary (8.6 MB)
+│   │   │                              - ELF 64-bit aarch64
+│   │   │                              - Statically linked
+│   │   │                              - Zero dependencies
+│   │   ├── CMakeFiles/                Build artifacts
+│   │   ├── Makefile                   Generated makefile
+│   │   └── CMakeCache.txt             CMake configuration
+│   │
+│   ├── CMakeLists.txt                 Build configuration
+│   │   - Project: EmbeddedMonitorService v1.0.0
+│   │   - C++17 standard enforcement
+│   │   - Static linking (-static flag)
+│   │   - aarch64 optimization (-march=armv8-a)
+│   │
+│   ├── CMakeToolchain.cmake           Cross-compiler configuration
+│   │   - aarch64-unknown-linux-gnu toolchain
+│   │   - Homebrew paths configuration
+│   │   - CMAKE_SYSTEM_NAME=Linux
+│   │   - CMAKE_SYSTEM_PROCESSOR=aarch64
+│   │
+│   └── [Build system files]
+│
+├── 🧪 TESTING & VERIFICATION ══════════════════════════════════════════════════
+│   │
+│   ├── tests/
+│   │   ├── test.sh                    Build verification (7 checks)
+│   │   ├── deployment_test.sh         Deployment testing
+│   │   ├── apple_silicon_test.sh      macOS verification
+│   │   ├── setup_toolchain.sh         Toolchain setup
+│   │   ├── test.cpp                   Unit test source
+│   │   └── [Test utilities]
+│   │
+│   └── [Verification scripts & logs]
+│
+├── 📦 DEPLOYMENT SCRIPTS ══════════════════════════════════════════════════════
+│   │
+│   ├── setup_device.sh                Service deployment (300+ lines)
+│   │   - SSH connection testing
+│   │   - Binary transfer via SCP
+│   │   - Systemd service creation
+│   │   - Auto-boot configuration
+│   │   - Service verification
+│   │
+│   ├── usb_flash_s905w.sh             USB flashing automation
+│   │   - Image download
+│   │   - Device detection
+│   │   - Flashing execution
+│   │   - Post-flash verification
+│   │
+│   └── [Other deployment utilities]
+│
+└── 📋 GIT & CONFIGURATION ═════════════════════════════════════════════════════
+    │
+    ├── .github/
+    │   └── copilot-instructions.md    AI agent guidelines
+    │
+    └── [Git configuration files]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+QUICK REFERENCE
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MOST IMPORTANT DIRECTORIES                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ data/images/        ← Download CoreELEC here                                │
+│ data/config/        ← Configuration files (auto-loaded)                     │
+│ data/logs/          ← Check logs after operations                           │
+│ data/cache/         ← Clean if space needed                                 │
+│ build-aarch64/      ← Compiled binary location                              │
+│ scripts/            ← Helper scripts (init, flash, deploy)                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+COMMON OPERATIONS
+
+Initialize Data System:
+  bash scripts/init_data.sh                    [✅ ALREADY DONE]
+
+Download OS Image:
+  cd data/images
+  wget https://releases.coreelec.org/CoreELEC-Amlogic.aarch64-latest.img.gz
+  gunzip CoreELEC-Amlogic.aarch64-latest.img.gz
+
+Load Configuration:
+  source scripts/load_config.sh
+
+Flash Device:
+  bash scripts/flash.sh                        [Uses data/images/ automatically]
+
+Deploy Service:
+  ./setup_device.sh 192.168.1.XXX              [Logs to data/logs/deployment.log]
+
+View Cache:
+  bash scripts/manage_cache.sh show
+
+Check Logs:
+  cat data/logs/flashing.log
+  tail -f data/logs/deployment.log
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FILE SIZE BREAKDOWN (Estimated)
+
+data/images/              500 MB  ← OS image (download once)
+data/cache/downloaded/    250 MB  ← Image backup (optional)
+data/cache/build/         200 MB  ← Build artifacts
+data/config/              50 KB   ← Configuration files
+data/logs/                1-10 MB ← Operation logs
+scripts/                  50 KB   ← Helper scripts
+build-aarch64/            10 MB   ← Compiled binary + artifacts
+src/                      1 MB    ← Source code
+
+TOTAL (with images): ~1-2 GB
+WITHOUT images:       ~10-20 MB
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DATA ORGANIZATION STATUS
+
+✅ Data directory created and initialized
+✅ Configuration files in place (4 files)
+✅ Helper scripts created (4 scripts)
+✅ Logging system configured
+✅ Cache management enabled
+✅ Git ignore configured
+✅ Environment templates created
+
+Ready for: Image download → Flashing → Service deployment
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DOCUMENTATION FILES GUIDE
+
+START HERE:
+  1. DATA_SETUP_COMPLETE.md        ← Quick summary (5 min read)
+  2. DATA_ORGANIZATION.md           ← Complete guide (15 min read)
+  3. PROJECT_INDEX.md               ← Full reference (10 min read)
+
+FOR SPECIFIC TASKS:
+  - Flashing:    USB_A_TO_A_FLASHING.md / USB_A_QUICK_START.md
+  - Deployment:  DEVICE_SETUP.md / setup_device.sh
+  - Building:    CMakeLists.txt / .github/copilot-instructions.md
+  - Architecture: .github/copilot-instructions.md / reports/REPORT.md
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NEXT STEPS
+
+1. Download CoreELEC image to data/images/
+2. Load configuration: source scripts/load_config.sh
+3. Flash device: bash scripts/flash.sh
+4. Deploy service: ./setup_device.sh <IP>
+
+All data stays in the codebase directory! ✅
+
+═══════════════════════════════════════════════════════════════════════════════
