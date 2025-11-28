@@ -1,0 +1,44 @@
+# Ignore CMake/build artifacts
+build-*
+build*/
+cmake-build*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+Makefile.cmake
+
+# Compiled objects and executables
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.dylib
+*.exe
+monitor_service
+
+# Editor directories and swap files
+.vscode/
+.idea/
+*.swp
+*~
+*.orig
+
+# macOS
+.DS_Store
+._*
+
+# Logs
+*.log
+logs/
+
+# Python caches and virtualenvs (in case devs use them)
+__pycache__/
+*.py[cod]
+venv/
+
+# Other
+*.tar.gz
+*.zip
+*.7z

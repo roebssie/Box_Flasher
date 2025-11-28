@@ -1,1 +1,0 @@
-/opt/homebrew/bin/aarch64-unknown-linux-gnu-g++ -march=armv8-a -mtune=cortex-a53 -static-libgcc -static-libstdc++ -Wl,--as-needed -static -Wl,--as-needed CMakeFiles/monitor_service.dir/src/main.cpp.o -o monitor_service
