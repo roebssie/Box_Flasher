@@ -42,3 +42,11 @@ venv/
 *.tar.gz
 *.zip
 *.7z
+*.tar
+*.tar.1
+
+# Firmware image files and targets
+S905W_USB_Flash/*.tar
+S905W_USB_Flash/*.tar.1
+S905W_USB_Flash/**/target/*
+
