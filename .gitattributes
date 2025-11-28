@@ -1,0 +1,9 @@
+# Treat common firmware artifacts as binary
+*.img   binary
+*.img.gz binary
+*.tar   binary
+*.tar.gz binary
+
+# Avoid accidentally exporting build artifacts
+build-aarch64/* export-ignore
+build-native/* export-ignore
