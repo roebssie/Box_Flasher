@@ -1,13 +1,14 @@
 # Cross-Platform Embedded System Monitoring Service
 
-A minimal, high-performance system monitoring utility for the Amlogic S905W embedded device (CoreELEC/LibreELEC), built on Apple Silicon macOS with aarch64-linux-gnu cross-compilation.
+A minimal, high-performance system monitoring utility for the Amlogic S905W embedded device (Armbian/Ophub), built on Apple Silicon macOS with aarch64-linux-gnu cross-compilation.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **macOS** with Apple Silicon (M1/M2/M3)
-- **Homebrew** (https://brew.sh)
-- **Xcode Command Line Tools** (`xcode-select --install`)
+- **macOS** with Apple Silicon (M1/M2/M3) OR **Windows 10/11** (Git Bash) OR **Linux**
+- **Homebrew** (macOS) or **Winget** (Windows)
+- **CMake** (3.15+)
+- **Arm GNU Toolchain** (14.3.Rel1 recommended for Windows)
 
 ### Build in 3 Steps
 

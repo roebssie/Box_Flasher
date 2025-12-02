@@ -17,7 +17,7 @@
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  PHASE 1: FLASH DEVICE (Do once)                        │
-│  ├─ Download CoreELEC/LibreELEC image                   │
+│  ├─ Download Armbian image (Ophub)                      │
 │  ├─ Flash to MicroSD card                               │
 │  └─ Insert into S905W and power on                       │
 └──────────┬───────────────────────────────────────────────┘

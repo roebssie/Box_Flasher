@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This project implements a minimal, high-performance, command-line monitoring service designed for the Amlogic S905W embedded system running CoreELEC or LibreELEC. The entire build process executes on Apple Silicon (M-series) macOS with cross-compilation to aarch64-linux-gnu, producing a single, statically-linked executable.
+This project implements a minimal, high-performance, command-line monitoring service designed for the Amlogic S905W embedded system running Armbian (Ophub Community Build). The entire build process executes on Apple Silicon (M-series) macOS with cross-compilation to aarch64-linux-gnu, producing a single, statically-linked executable.
 
 **Project Status:** ⚠ **READY FOR BUILD** (Awaiting aarch64-linux-gnu Toolchain Installation)  
 **Build Platform:** Apple Silicon macOS (M1/M2/M3)  
@@ -64,7 +64,7 @@ The monitoring service is architected as follows:
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │      Amlogic S905W Target (Embedded Linux)                  │
-│  ├── CoreELEC / LibreELEC (minimal distribution)            │
+│  ├── Armbian (Ophub Community Build)                        │
 │  ├── Reads: /sys/class/thermal/thermal_zone0/temp           │
 │  ├── Reads: /proc/meminfo                                   │
 │  ├── Reads: /proc/mounts                                    │
@@ -108,10 +108,8 @@ The monitoring service is architected as follows:
 
 **Steps:**
 1. **Image Acquisition**
-   - Download CoreELEC or LibreELEC image for Amlogic S905W
-   - Sources:
-     - CoreELEC: https://coreelec.org/
-     - LibreELEC: https://libreelec.tv/
+   - Download Armbian image for Amlogic S905W (Ophub Build)
+   - Source: https://github.com/ophub/amlogic-s9xxx-armbian/releases
    - Select the appropriate ARM variant (aarch64)
 
 2. **Media Preparation**
@@ -123,7 +121,7 @@ The monitoring service is architected as follows:
      # OR using dd (command line):
      diskutil list  # Identify USB device (e.g., /dev/disk2)
      diskutil unmountDisk /dev/disk2
-     sudo dd if=CoreELEC-Amlogic.img of=/dev/rdisk2 bs=4m
+     sudo dd if=Armbian_...img of=/dev/rdisk2 bs=4m
      diskutil eject /dev/disk2
      ```
 
@@ -454,7 +452,7 @@ export TARGET_PORT=22
 | aarch64-linux-gnu-g++ | 10.2.0+ | Cross-compilation | Targets ARM64 Linux |
 | C++ Standard | C++17 | Application language | Modern, performant, widely supported |
 | Standard Library | libstdc++ | C++ runtime | Statically linked for portability |
-| Linux Kernel | 5.4+ | Target OS | Embedded Linux distributions (CoreELEC, LibreELEC) |
+| Linux Kernel | 5.15/6.1 | Target OS | Embedded Linux distributions (Armbian) |
 | POSIX | 2008 | System interface | File I/O, process management |
 
 ### Dependency Management
@@ -536,7 +534,7 @@ build-aarch64/monitor_service: ELF 64-bit LSB executable, ARM aarch64,
 
 ### Prerequisites on Target Device
 
-1. **Device Running CoreELEC/LibreELEC**
+1. **Device Running Armbian**
 2. **Network Connectivity** (DHCP or static IP configured)
 3. **SSH Enabled** on the embedded system
 4. **Root or appropriate user access**
@@ -597,7 +595,7 @@ brew install nmap
 nmap -sn 192.168.1.0/24  # Adjust network range as needed
 
 # Method 4: SSH to known hostname
-ssh root@coreelec.local  # if mDNS is configured
+ssh root@armbian.local  # if mDNS is configured
 ```
 
 ### Persistent Installation (Optional)
@@ -935,7 +933,7 @@ This project successfully demonstrates a complete cross-compilation workflow fro
 ✓ **Robust:** Comprehensive error handling and graceful degradation  
 ✓ **Monitored:** Provides comprehensive system metrics (CPU, RAM, storage)  
 
-The project is ready for deployment to Amlogic S905W devices running CoreELEC or LibreELEC operating systems.
+The project is ready for deployment to Amlogic S905W devices running Armbian operating systems.
 
 ### Next Steps
 

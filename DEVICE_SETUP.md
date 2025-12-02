@@ -3,7 +3,7 @@
 ## 📋 Overview
 
 This guide covers:
-1. **Flashing the Amlogic S905W** with CoreELEC/LibreELEC
+1. **Flashing the Amlogic S905W** with Armbian (Ophub Community Build)
 2. **Transferring the monitoring service binary**
 3. **Setting up persistent execution** via systemd service
 4. **Monitoring and logging**
@@ -19,27 +19,21 @@ This guide covers:
 - macOS with Homebrew installed
 - ~30 minutes
 
-### Step 1.1: Download CoreELEC/LibreELEC Image
+### Step 1.1: Download Armbian Image
 
-**Option A: CoreELEC (Recommended for Amlogic)**
+**Option A: Automated Download (Recommended)**
 ```bash
-# Download CoreELEC for Amlogic S905W
-# Go to: https://coreelec.org/
-# Select: Amlogic → Latest Stable → aarch64 (ARM64)
-# Or use wget:
-cd ~/Downloads
-wget https://releases.coreelec.org/CoreELEC-Amlogic.aarch64-latest.img.gz
-gunzip CoreELEC-Amlogic.aarch64-latest.img.gz
+# Use the helper script
+./scripts/get_armbian_s905w.sh
 ```
 
-**Option B: LibreELEC for Amlogic**
+**Option B: Manual Download**
 ```bash
-# Download LibreELEC for Amlogic S905W
-# Go to: https://libreelec.tv/
-# Select: Downloads → Amlogic → Latest → aarch64
-cd ~/Downloads
-wget https://releases.libreelec.tv/LibreELEC-Amlogic.aarch64-latest.img.gz
-gunzip LibreELEC-Amlogic.aarch64-latest.img.gz
+# Download Armbian for Amlogic S905W (Ophub Build)
+# URL: https://github.com/ophub/amlogic-s9xxx-armbian/releases
+cd data/images
+wget https://github.com/ophub/amlogic-s9xxx-armbian/releases/download/Armbian_bullseye_arm64_server_2025.11/Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img.gz
+gunzip Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img.gz
 ```
 
 ### Step 1.2: Identify SD Card Device
@@ -78,7 +72,8 @@ diskutil list $SD_DEVICE
 ```bash
 # Use rdisk for faster writing (raw device)
 # This takes 2-5 minutes
-sudo dd if=~/Downloads/CoreELEC-Amlogic.aarch64-latest.img \
+# Note: Adjust path if you downloaded manually
+sudo dd if=data/images/Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img \
          of=/dev/r${SD_DEVICE#/dev/} \
          bs=4m \
          status=progress

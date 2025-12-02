@@ -17,7 +17,7 @@ All project data is now **centrally located** in the `/data` directory within th
 Box_Flasher/
 ├── data/                              # 📦 ALL PROJECT DATA
 │   ├── images/                        # 🖼️ OS images for S905W
-│   │   ├── CoreELEC-Amlogic.aarch64-latest.img  (~500 MB)
+│   │   ├── Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img  (~2 GB)
 │   │   └── README.md
 │   │
 │   ├── config/                        # ⚙️ Configuration files
@@ -86,16 +86,13 @@ echo $LOGS_DIR             # ./data/logs
 ### 3. Download OS Image
 
 ```bash
+# Use the helper script
+./scripts/get_armbian_s905w.sh
+
+# Or manually:
 cd data/images
-
-# Download CoreELEC image
-wget https://releases.coreelec.org/CoreELEC-Amlogic.aarch64-latest.img.gz
-
-# Extract
-gunzip CoreELEC-Amlogic.aarch64-latest.img.gz
-
-# Verify
-ls -lh CoreELEC-Amlogic.aarch64-latest.img
+wget https://github.com/ophub/amlogic-s9xxx-armbian/releases/download/Armbian_bullseye_arm64_server_2025.11/Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img.gz
+gunzip Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img.gz
 ```
 
 ### 4. Flash Device

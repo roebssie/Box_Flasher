@@ -57,12 +57,16 @@ if command -v aarch64-unknown-linux-gnu-g++ &> /dev/null; then
 elif command -v aarch64-linux-gnu-g++ &> /dev/null; then
     CROSS_COMPILER="aarch64-linux-gnu-g++"
     print_success "Found: aarch64-linux-gnu-g++"
+elif command -v aarch64-none-linux-gnu-g++ &> /dev/null; then
+    CROSS_COMPILER="aarch64-none-linux-gnu-g++"
+    print_success "Found: aarch64-none-linux-gnu-g++"
 else
     print_error "aarch64 cross-compiler not found!"
     echo ""
     echo "Installation instructions:"
-    echo "  brew tap messense/macos-cross-toolchains"
-    echo "  brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu"
+    echo "  macOS: brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu"
+    echo "  Linux: sudo apt-get install g++-aarch64-linux-gnu"
+    echo "  Windows: Install Arm GNU Toolchain (aarch64-none-linux-gnu)"
     exit 1
 fi
 

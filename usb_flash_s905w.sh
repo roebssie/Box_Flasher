@@ -24,8 +24,8 @@ fi
 
 # Defaults (can be overridden by data/config/flashing.config or .env)
 WORK_DIR="${IMAGES_DIR:-$HOME/S905W_Flashing}"
-IMG_URL="${IMAGE_SOURCE_URL:-https://releases.coreelec.org/CoreELEC-Amlogic.aarch64-latest.img.gz}"
-IMG_FILENAME="${IMAGE_FILENAME:-CoreELEC-Amlogic.aarch64-latest.img}"
+IMG_URL="${IMAGE_SOURCE_URL:-https://github.com/ophub/amlogic-s9xxx-armbian/releases/download/Armbian_bullseye_arm64_server_2025.11/Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img.gz}"
+IMG_FILENAME="${IMAGE_FILENAME:-Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img}"
 IMG_GZ_FILENAME="${IMAGE_COMPRESSED_FILENAME:-${IMG_FILENAME}.gz}"
 
 ##############################################################################
@@ -95,7 +95,7 @@ setup_working_directory() {
 }
 
 download_image() {
-    print_header "Step 3: Downloading CoreELEC Image"
+    print_header "Step 3: Downloading Armbian Image"
     
     if [ -f "$WORK_DIR/$IMG_FILENAME" ]; then
         print_success "Image already exists: $IMG_FILENAME"
@@ -116,11 +116,11 @@ download_image() {
         fi
     fi
     
-    print_step "Attempting to download CoreELEC image using helper script..."
+    print_step "Attempting to download Armbian image using helper script..."
     print_step "If automatic download fails, you can provide a local image in $WORK_DIR"
 
     # Try helper script first (will download the release asset into WORK_DIR)
-    HELPER_PATH="${SCRIPT_DIR}/scripts/get_latest_coreelec_aarch64.sh"
+    HELPER_PATH="${SCRIPT_DIR}/scripts/get_armbian_s905w.sh"
     if [ -f "$HELPER_PATH" ]; then
         if [ -x "$HELPER_PATH" ]; then
             if ! "$HELPER_PATH" "$WORK_DIR"; then
@@ -138,25 +138,8 @@ download_image() {
     fi
 
     # Inspect WORK_DIR for common artifacts
-    # Prefer .tar releases, then .img.gz, then .img
-    TARFILE=$(ls -1 "$WORK_DIR"/CoreELEC-Amlogic-*.tar 2>/dev/null | tail -n1 || true)
-    IMG_GZ=$(ls -1 "$WORK_DIR"/CoreELEC-Amlogic-*.img.gz 2>/dev/null | tail -n1 || true)
-    IMG_FILE=$(ls -1 "$WORK_DIR"/CoreELEC-Amlogic-*.img 2>/dev/null | tail -n1 || true)
-
-    if [ -n "$TARFILE" ]; then
-        print_step "Found release tar: $TARFILE — extracting target image..."
-        tar -xvf "$TARFILE" -C "$WORK_DIR"
-        # get top-level dir from tar
-        TOPDIR=$(tar -tf "$TARFILE" | sed -n '1p' | sed 's:/*$::')
-        if [ -f "$WORK_DIR/$TOPDIR/target/SYSTEM" ]; then
-            IMG_FILE="$WORK_DIR/$TOPDIR/target/SYSTEM"
-            IMG_FILENAME="$(basename "$IMG_FILE")"
-            print_success "Prepared image: $IMG_FILE"
-            return
-        else
-            print_warning "No target/SYSTEM found inside tar — inspect $WORK_DIR/$TOPDIR"
-        fi
-    fi
+    IMG_GZ=$(ls -1 "$WORK_DIR"/Armbian_*.img.gz 2>/dev/null | tail -n1 || true)
+    IMG_FILE=$(ls -1 "$WORK_DIR"/Armbian_*.img 2>/dev/null | tail -n1 || true)
 
     if [ -n "$IMG_GZ" ]; then
         print_step "Found compressed image: $IMG_GZ — extracting..."
@@ -186,7 +169,7 @@ download_image() {
         return
     fi
 
-    print_error "No CoreELEC image found or downloaded. Place an image in $WORK_DIR and re-run."
+    print_error "No Armbian image found or downloaded. Place an image in $WORK_DIR and re-run."
     exit 1
     
     if ! wget -q --show-progress -O "$WORK_DIR/$IMG_GZ_FILENAME" "$IMG_URL"; then
@@ -357,9 +340,9 @@ post_flash() {
     echo "4. Device should appear on network"
     echo ""
     echo "To find device IP:"
-    echo "  ping -c 1 coreelec.local"
+    echo "  ping -c 1 armbian.local"
     echo ""
-    echo "Or check your router's DHCP table for 'CoreELEC'"
+    echo "Or check your router's DHCP table for 'armbian'"
     echo ""
 }
 
@@ -387,7 +370,7 @@ main() {
     echo ""
     echo "╔════════════════════════════════════════════════════════╗"
     echo "║   Amlogic S905W USB Direct Flashing Tool              ║"
-    echo "║   macOS with CoreELEC/LibreELEC                       ║"
+    echo "║   macOS with Armbian (Ophub)                          ║"
     echo "╚════════════════════════════════════════════════════════╝"
     echo ""
     

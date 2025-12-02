@@ -1,10 +1,10 @@
 # AI Coding Agent Instructions - Embedded System Monitoring Service
 
 ## Project Overview
-**Cross-platform embedded monitoring service**: Apple Silicon macOS → aarch64 Linux cross-compilation workflow. Single C++17 executable monitoring CPU temperature, RAM usage, and storage on Amlogic S905W devices (CoreELEC/LibreELEC).
+**Cross-platform embedded monitoring service**: Apple Silicon macOS / linux / x64 windows (WSL2) → aarch64 Linux cross-compilation workflow. Single C++17 executable monitoring CPU temperature, RAM usage, and storage on Amlogic S905W devices (Armbian/Ophub).
 
 **Key Facts:**
-- **Host build platform:** Apple Silicon (arm64) macOS only
+- **Host build platform:** Apple Silicon (arm64) macOS and x64 Linux and x64 windows (WSL2)
 - **Target architecture:** aarch64 (ARMv8) embedded Linux  
 - **Executable characteristics:** Single static binary (~5-8 MB), zero runtime dependencies
 - **Language:** C++17 with POSIX syscalls for file I/O
@@ -12,9 +12,9 @@
 ## Critical Architecture Pattern: Cross-Compilation Pipeline
 
 The project's core concept is **host-to-target architecture mismatch**:
-- **Build Host:** Apple Silicon (arm64 macOS)
+- **Build Host:** Apple Silicon (arm64) macOS and x64 Linux and x64 windows (WSL2)
 - **Build Output:** aarch64 ELF binary
-- **Target Platform:** Minimal embedded Linux (Amlogic S905W, CoreELEC/LibreELEC)
+- **Target Platform:** Minimal embedded Linux (Amlogic S905W, Armbian/Ophub)
 
 **Key implication:** Never assume compilation flags work universally. Architecture-specific flags MUST be in `CMakeToolchain.cmake`, not `CMakeLists.txt`. The toolchain file is the single source of truth for cross-compiler paths and target system settings.
 

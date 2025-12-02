@@ -29,13 +29,32 @@ else()
     elseif(EXISTS "/usr/local/bin/aarch64-linux-gnu-gcc")
         set(TOOLCHAIN_PREFIX "/usr/local")
         set(TOOLCHAIN_TRIPLE "aarch64-linux-gnu")
+    elseif(EXISTS "/usr/bin/aarch64-linux-gnu-gcc")
+        set(TOOLCHAIN_PREFIX "/usr")
+        set(TOOLCHAIN_TRIPLE "aarch64-linux-gnu")
     else()
-        message(FATAL_ERROR 
-            "aarch64 Linux toolchain not found in standard locations!\n"
-            "Please install one of these:\n"
-            "  Option A (Recommended): brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu\n"
-            "  Option B (Alternative): brew tap SergioBenitez/osxcross && brew install aarch64-linux-gnu"
-        )
+        # Try to find in PATH (Generic fallback for Windows/Linux custom installs)
+        find_program(AARCH64_GCC_PATH NAMES aarch64-linux-gnu-gcc aarch64-none-linux-gnu-gcc aarch64-unknown-linux-gnu-gcc)
+        
+        if(AARCH64_GCC_PATH)
+            get_filename_component(TOOLCHAIN_BIN_DIR ${AARCH64_GCC_PATH} DIRECTORY)
+            get_filename_component(TOOLCHAIN_PREFIX ${TOOLCHAIN_BIN_DIR} DIRECTORY)
+            
+            # Extract triple from filename
+            get_filename_component(GCC_FILENAME ${AARCH64_GCC_PATH} NAME)
+            string(REPLACE "-gcc" "" TOOLCHAIN_TRIPLE ${GCC_FILENAME})
+            if(WIN32)
+                 string(REPLACE ".exe" "" TOOLCHAIN_TRIPLE ${TOOLCHAIN_TRIPLE})
+            endif()
+        else()
+            message(FATAL_ERROR 
+                "aarch64 Linux toolchain not found in standard locations or PATH!\n"
+                "Please install one of these:\n"
+                "  macOS (Homebrew): brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu\n"
+                "  Linux/WSL (apt):  sudo apt-get install g++-aarch64-linux-gnu\n"
+                "  Windows:          Install Arm GNU Toolchain (aarch64-none-linux-gnu) and add to PATH"
+            )
+        endif()
     endif()
 endif()
 

@@ -9,6 +9,7 @@
 
 ## Step 1: Install Cross-Compiler Toolchain (5-10 minutes)
 
+### macOS (Apple Silicon)
 Run this command to install the aarch64-linux-gnu cross-compiler:
 
 ```bash
@@ -16,10 +17,24 @@ brew tap messense/macos-cross-toolchains
 brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu
 ```
 
+### Windows (MinGW/Git Bash)
+1. Download the **Arm GNU Toolchain 14.3.Rel1** for Windows x86_64:
+   - File: `arm-gnu-toolchain-14.3.rel1-mingw-w64-x86_64-aarch64-none-linux-gnu.exe`
+   - Source: [Arm Developer Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
+2. Run the installer.
+3. **Important:** Select "Add path to environment variable" during installation.
+4. Restart Git Bash.
+
+### Linux (Debian/Ubuntu)
+```bash
+sudo apt-get update
+sudo apt-get install g++-aarch64-linux-gnu
+```
+
 **Verify installation:**
 ```bash
-aarch64-unknown-linux-gnu-g++ --version
-# Should output: aarch64-unknown-linux-gnu-g++ (GCC) 13.x.x ...
+# Run the setup script to verify everything
+./tests/setup_toolchain.sh
 ```
 
 ---
@@ -51,7 +66,7 @@ build-aarch64/monitor_service: ELF 64-bit LSB executable, ARM aarch64,
 ## Step 3: Deploy to Target Device
 
 ### Prerequisites:
-- Target device running CoreELEC/LibreELEC with SSH enabled
+- Target device running Armbian (Ophub) with SSH enabled
 - Network connectivity to the device
 - Know the device's IP address
 
@@ -127,7 +142,7 @@ cmake -DCMAKE_TOOLCHAIN_FILE=CMakeToolchain.cmake -B build-aarch64 .
 1. Verify device is powered on and connected to network
 2. Find the device IP:
    ```bash
-   ping -c 1 coreelec.local  # if mDNS is configured
+   ping -c 1 armbian.local  # if mDNS is configured
    # or check your router's DHCP table
    ```
 3. Enable SSH on target (if not already enabled)

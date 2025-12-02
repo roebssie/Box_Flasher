@@ -26,10 +26,8 @@
 ### Quick Commands
 
 ```bash
-# 1. Download CoreELEC image
-cd ~/Downloads
-wget https://releases.coreelec.org/CoreELEC-Amlogic.aarch64-latest.img.gz
-gunzip CoreELEC-Amlogic.aarch64-latest.img.gz
+# 1. Download Armbian image
+./scripts/get_armbian_s905w.sh
 
 # 2. Find your SD card
 diskutil list
@@ -40,7 +38,8 @@ export SD_DEVICE="/dev/disk1"
 diskutil unmountDisk $SD_DEVICE
 
 # 4. Flash image (TAKES 2-5 MINUTES)
-sudo dd if=~/Downloads/CoreELEC-Amlogic.aarch64-latest.img \
+# Note: Adjust path if you downloaded manually
+sudo dd if=data/images/Armbian_25.11.0_amlogic_s905w_bullseye_6.1.158_server_2025.11.11.img \
          of=/dev/r${SD_DEVICE#/dev/} \
          bs=4m \
          status=progress

@@ -110,7 +110,10 @@ main() {
     if [ ! -f "$IMAGES_DIR/$IMAGE_FILE" ]; then
         print_error "Image not found: $IMAGES_DIR/$IMAGE_FILE"
         echo ""
-        echo "To download image:"
+        echo "To download image, run:"
+        echo "  ./scripts/get_armbian_s905w.sh"
+        echo ""
+        echo "Or manually:"
         echo "  cd $IMAGES_DIR"
         echo "  wget $IMAGE_URL"
         echo "  gunzip $IMAGE_COMPRESSED_FILENAME"
