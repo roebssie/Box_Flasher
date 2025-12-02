@@ -66,12 +66,22 @@ endif()
 message(STATUS "Using toolchain prefix: ${TOOLCHAIN_PREFIX}")
 message(STATUS "Using toolchain triple: ${TOOLCHAIN_TRIPLE}")
 
-# Specify the cross compiler
-set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-gcc" CACHE PATH "C Compiler")
-set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-g++" CACHE PATH "CXX Compiler")
-set(CMAKE_AR "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-ar" CACHE PATH "AR Tool")
-set(CMAKE_RANLIB "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-ranlib" CACHE PATH "RANLIB Tool")
-set(CMAKE_STRIP "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-strip" CACHE PATH "STRIP Tool")
+# =============================================================================
+# Determine executable extension for Windows compatibility
+# Windows compilers have .exe extension, Unix does not
+# =============================================================================
+if(WIN32)
+    set(COMPILER_SUFFIX ".exe")
+else()
+    set(COMPILER_SUFFIX "")
+endif()
+
+# Specify the cross compiler with proper extension handling
+set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-gcc${COMPILER_SUFFIX}" CACHE PATH "C Compiler")
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-g++${COMPILER_SUFFIX}" CACHE PATH "CXX Compiler")
+set(CMAKE_AR "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-ar${COMPILER_SUFFIX}" CACHE PATH "AR Tool")
+set(CMAKE_RANLIB "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-ranlib${COMPILER_SUFFIX}" CACHE PATH "RANLIB Tool")
+set(CMAKE_STRIP "${TOOLCHAIN_PREFIX}/bin/${TOOLCHAIN_TRIPLE}-strip${COMPILER_SUFFIX}" CACHE PATH "STRIP Tool")
 
 # Operating system settings
 set(CMAKE_SYSTEM_NAME Linux)

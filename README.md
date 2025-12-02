@@ -1,14 +1,26 @@
 # Cross-Platform Embedded System Monitoring Service
 
-A minimal, high-performance system monitoring utility for the Amlogic S905W embedded device (Armbian/Ophub), built on Apple Silicon macOS with aarch64-linux-gnu cross-compilation.
+A minimal, high-performance system monitoring utility for the Amlogic S905W embedded device (Armbian/CoreELEC), built with cross-compilation from macOS (Apple Silicon), Linux, or Windows.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **macOS** with Apple Silicon (M1/M2/M3) OR **Windows 10/11** (Git Bash) OR **Linux**
-- **Homebrew** (macOS) or **Winget** (Windows)
-- **CMake** (3.15+)
-- **Arm GNU Toolchain** (14.3.Rel1 recommended for Windows)
+- **macOS** with Apple Silicon (M1/M2/M3) OR **Windows 10/11** (Git Bash/MinGW) OR **Linux**
+- **CMake** (3.10+)
+- **aarch64 Cross-Compiler** (see toolchain installation below)
+
+### Toolchain Installation
+
+```bash
+# macOS (Homebrew - messense tap)
+brew tap messense/macos-cross-toolchains && brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu
+
+# Linux/WSL (apt)
+sudo apt-get install g++-aarch64-linux-gnu
+
+# Windows: Install Arm GNU Toolchain 14.3.Rel1, add to PATH
+# Download from: https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
+```
 
 ### Build in 3 Steps
 
@@ -25,18 +37,34 @@ file build-aarch64/monitor_service
 # Output: ELF 64-bit LSB executable, ARM aarch64, statically linked
 ```
 
-## 📦 What's Included
+## 📦 Two Main Workflows
 
-| File | Purpose |
-|------|---------|
-| `src/main.cpp` | System monitoring application (C++17) |
-| `CMakeLists.txt` | CMake build configuration |
-| `CMakeToolchain.cmake` | Cross-compilation toolchain for aarch64-linux-gnu |
-| `tests/setup_toolchain.sh` | Verifies build environment and dependencies |
-| `tests/deployment_test.sh` | Automated deployment and testing script |
-| `tests/test.sh` | Build verification and testing suite |
-| `reports/REPORT.md` | Complete technical documentation |
-| `reports/QUICKSTART.md` | Fast deployment reference guide |
+### 1. Build Workflow (C++ Cross-Compilation)
+```bash
+./tests/setup_toolchain.sh                                    # One-time setup
+cmake -DCMAKE_TOOLCHAIN_FILE=CMakeToolchain.cmake -B build-aarch64 .
+cmake --build build-aarch64
+file build-aarch64/monitor_service  # Must show: aarch64, statically linked
+```
+
+### 2. Device Setup Workflow (Flash + Deploy)
+```bash
+./scripts/init_data.sh              # Create data/cache structure
+./scripts/get_armbian_s905w.sh      # Download Armbian image
+./usb_flash_s905w.sh                # Flash image (macOS interactive)
+./setup_device.sh 192.168.1.100     # Deploy service to device
+```
+
+## ⚡ USB A-to-A Direct Flashing
+
+> **⚠️ This project flashes directly to the S905W's internal eMMC via USB A-to-A cable** (NOT SD card/USB drive).
+
+The device must be put into USB flashing mode (boot button or NAND_BOOT jumper) and connected via USB A male-to-male cable.
+
+**Cross-platform flashing tools:**
+- **macOS:** `usb_flash_s905w.sh` uses `aml_usb_flashing_tool` (Homebrew: `messense/amlogic-tools`)
+- **Windows:** Official [Amlogic USB Burning Tool](https://github.com/nicknumb/amlogic_usb_burn_tool) (GUI, most reliable)
+- **Linux:** `aml_usb_flashing_tool` or `pyamlboot` for direct USB flashing
 
 ## 📊 Features
 
@@ -51,42 +79,49 @@ file build-aarch64/monitor_service
 - ✅ Cross-compilation to aarch64 (ARMv8)
 - ✅ Single executable file (~500-800 KB)
 - ✅ POSIX-compliant for embedded Linux compatibility
+- ✅ No `system()` calls or shell dependencies
 
-## 🔧 Deployment
+## 📁 Project Structure
 
-### Simple: Use Automated Script
-```bash
-export TARGET_HOST=root@192.168.1.100
-./tests/deployment_test.sh
+```
+Box_Flasher/
+├── src/main.cpp              # Monitoring logic (add sensors here)
+├── include/monitor.h         # Header with testable parse functions
+├── CMakeLists.txt            # Build config (don't add arch flags)
+├── CMakeToolchain.cmake      # Cross-compiler paths, target system
+├── scripts/
+│   ├── load_config.sh        # Config loader for all shell scripts
+│   ├── init_data.sh          # Create data/cache structure
+│   └── get_armbian_s905w.sh  # Download Armbian image
+├── data/config/
+│   ├── device.config         # S905W hardware paths (THERMAL_ZONE_PATH, MEMINFO_PATH)
+│   ├── build.config          # Compiler flags, build dir (BUILD_DIR=build-aarch64)
+│   ├── flashing.config       # Image URLs, filenames
+│   └── service.config        # Service installation paths
+├── tests/
+│   ├── test.sh               # 7-step build verification
+│   ├── deployment_test.sh    # SCP + SSH remote execution
+│   ├── setup_toolchain.sh    # Install cross-compiler
+│   └── test.cpp              # Unit tests for parse functions
+├── setup_device.sh           # One-command device deployment
+├── usb_flash_s905w.sh        # Flash image (macOS interactive)
+└── build-aarch64/            # Build output (generated)
+    └── monitor_service       # Final executable
 ```
 
-## ⚡ Short Quickstart (Flash & Deploy)
+## 🔧 Configuration System
 
-Run these commands to prepare, build, flash, and install the monitor quickly (defaults are read from `data/config/*.config` and `data/.env` if present):
+All scripts load config via `scripts/load_config.sh` which sources:
+- `data/config/device.config` - S905W hardware paths
+- `data/config/build.config` - Compiler flags, build dir (`BUILD_DIR=build-aarch64`)
+- `data/config/flashing.config` - Image URLs, filenames
+- `data/config/service.config` - Service installation paths
+- `data/.env` - Local overrides (highest precedence, gitignored)
 
+**Pattern:** Scripts source `load_config.sh` at startup, then use exported variables with fallback defaults:
 ```bash
-# 1. Create data/cache structure and sample env
-./scripts/init_data.sh
-
-# 2. One-time toolchain setup on macOS
-./tests/setup_toolchain.sh
-
-# 3. Build the cross-compiled binary for aarch64
-cmake -DCMAKE_TOOLCHAIN_FILE=CMakeToolchain.cmake -B build-aarch64 .
-cmake --build build-aarch64
-
-# 4. Flash CoreELEC to the S905W (interactive macOS helper)
-./usb_flash_s905w.sh
-
-# 5. Transfer and install the monitoring service to the device
-# Replace 192.168.1.100 with your device IP
-./setup_device.sh 192.168.1.100
-```
-
-### Manual: SCP + SSH
-```bash
-scp build-aarch64/monitor_service root@<device-ip>:/tmp/
-ssh root@<device-ip> "/tmp/monitor_service"
+if [ -f "./scripts/load_config.sh" ]; then source ./scripts/load_config.sh; fi
+EXECUTABLE_PATH="${EXECUTABLE_PATH:-${BUILD_DIR:-build-aarch64}/monitor_service}"
 ```
 
 ## 📋 Output Example
@@ -113,55 +148,31 @@ Mounted filesystems (storage points):
 === Monitoring Service Completed ===
 ```
 
-## 🛠️ Project Structure
-
-```
-Box_Flasher/
-├── src/
-│   └── main.cpp              # Core monitoring logic
-├── CMakeLists.txt            # Build configuration
-├── CMakeToolchain.cmake      # Cross-compiler definition
-├── tests/
-│   ├── setup_toolchain.sh    # Environment setup
-│   ├── deployment_test.sh    # Deployment automation
-│   ├── test.sh               # Build verification
-│   ├── apple_silicon_test.sh # Compatibility tests
-│   └── test.cpp              # Test source code
-├── reports/
-│   ├── REPORT.md             # Full technical documentation
-│   ├── QUICKSTART.md         # Quick start guide
-│   └── (other reports)       # Additional documentation
-├── README.md                 # This file
-└── build-aarch64/            # Build output (generated)
-    └── monitor_service       # Final executable
-```
-
-## 📖 Documentation
-
-For detailed information, see:
-- **[REPORT.md](REPORT.md)** - Complete technical documentation
-  - Architecture overview
-  - Phase-by-phase breakdown
-  - Build instructions with examples
-  - Deployment guide
-  - Verification results
-  - Troubleshooting
-
 ## 🎯 Target System
 
 **Device:** Amlogic S905W  
-**OS:** CoreELEC or LibreELEC (embedded Linux)  
+**OS:** Armbian or CoreELEC (embedded Linux)  
 **Architecture:** aarch64 (ARM64)  
 **Kernel:** Linux 5.4+ (typical for embedded distributions)
+
+## 🔍 Common Mistakes
+
+1. **Missing toolchain file** - Always use `-DCMAKE_TOOLCHAIN_FILE=CMakeToolchain.cmake`
+2. **Wrong architecture flags location** - Put in `CMakeToolchain.cmake`, not `CMakeLists.txt`
+3. **Dynamic linking** - If `file` output doesn't show "statically linked", rebuild
+4. **Testing locally** - Binary only runs on aarch64 Linux, not macOS/Windows
+5. **Adding external dependencies** - Forbidden; use only C++17 stdlib + POSIX
 
 ## 🔍 Troubleshooting
 
 ### Cross-compiler not found?
 ```bash
-brew install aarch64-elf-gcc aarch64-elf-binutils
-# Or compile from source:
-git clone https://github.com/tpoechtrager/osxcross.git
-cd osxcross && UNATTENDED=1 ./build_gcc.sh aarch64 linux
+# macOS
+brew tap messense/macos-cross-toolchains
+brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu
+
+# Linux/WSL
+sudo apt-get install g++-aarch64-linux-gnu
 ```
 
 ### Build fails?
@@ -177,11 +188,8 @@ cmake --build build-aarch64
 # Find your device IP
 arp -a | grep -i amlogic
 # Or use Nmap
-brew install nmap
 nmap -sn 192.168.1.0/24
 ```
-
-See **[reports/REPORT.md#troubleshooting](reports/REPORT.md#troubleshooting)** for more solutions.
 
 ## ⚙️ Development
 
@@ -190,26 +198,34 @@ See **[reports/REPORT.md#troubleshooting](reports/REPORT.md#troubleshooting)** f
 2. Rebuild: `cmake --build build-aarch64`
 3. Test on device: `./tests/deployment_test.sh`
 
-### Customizing Build Flags
-Edit `CMakeLists.txt`:
-```cmake
-target_compile_options(monitor_service PRIVATE -O3 -march=armv8-a)
+### Running Unit Tests
+```bash
+# Build tests for host (not cross-compiled)
+cmake -DBUILD_TESTS=ON -B build-tests .
+cmake --build build-tests
+./build-tests/test_runner
 ```
 
-## 📝 License
+### Verification Command
+```bash
+./tests/test.sh  # Runs: CMake check → compiler check → build → architecture verify
+```
 
-This project demonstrates cross-compilation techniques for embedded systems. Use as needed for your specific hardware targets.
+## 📖 Documentation
+
+For detailed information, see:
+- **[reports/REPORT.md](reports/REPORT.md)** - Complete phase-by-phase documentation
+- **[reports/QUICKSTART.md](reports/QUICKSTART.md)** - Fastest path to verification
 
 ## 🔗 Resources
 
 - [CMake Cross-Compilation](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html)
-- [osxcross - macOS to Linux cross-compiler](https://github.com/tpoechtrager/osxcross)
 - [Amlogic S905W Information](https://github.com/khadas/fenix)
+- [Armbian Project](https://www.armbian.com/)
 - [CoreELEC Project](https://coreelec.org/)
-- [LibreELEC Project](https://libreelec.tv/)
 
 ---
 
 **Status:** ✓ Complete and Verified  
-**Build Host:** Apple Silicon macOS  
-**Target:** aarch64 Embedded Linux
+**Build Hosts:** macOS (Apple Silicon), Linux, Windows (Git Bash/MinGW)  
+**Target:** aarch64 Embedded Linux (Armbian/CoreELEC on S905W)
